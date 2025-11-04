@@ -16,6 +16,14 @@ func main() {
 	fmt.Println("效的括号: ", isValid("([)]"))
 	//最长公共前缀
 	fmt.Println("最长公共前缀: ", longestCommonPrefix([]string{"abab", "aba", ""}))
+	//加一
+	fmt.Println("加一: ", plusOne([]int{7, 2, 8, 5, 0, 9, 1, 2, 9, 5, 3, 6, 6, 7, 3, 2, 8, 4, 3, 7, 9, 5, 7, 7, 4, 7, 4, 9, 4, 7, 0, 1, 1, 1, 7, 4, 0, 0, 6}))
+	//删除有序数组中的重复项
+	fmt.Println("删除有序数组中的重复项: ", removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
+	//合并区间
+	fmt.Println("合并区间: ", merge([][]int{{4, 5}, {1, 4}, {0, 1}}))
+	//两数之和
+	fmt.Println("两数之和: ", twoSum([]int{2, 7, 11, 15}, 9))
 }
 
 // 136. 只出现一次的数字
@@ -103,4 +111,84 @@ func longestCommonPrefix(strs []string) string {
 		}
 	}
 	return string(r[:a+1])
+}
+
+// 加一
+func plusOne(digits []int) []int {
+	return addOne(digits, len(digits)-1)
+}
+
+func addOne(digits []int, index int) []int {
+	if index < 0 {
+		return append([]int{1}, digits...)
+	} else if digits[index] < 9 {
+		digits[index] += 1
+		return digits
+	} else {
+		digits[index] = 0
+		return addOne(digits, index-1)
+	}
+}
+
+// 删除有序数组中的重复项
+func removeDuplicates(nums []int) int {
+	if len(nums) == 0 || len(nums) == 1 {
+		return len(nums)
+	}
+	for i := 0; i < len(nums); i++ {
+		for j := i + 1; j < len(nums); j++ {
+			if nums[i] == nums[j] {
+				nums = append(nums[:j], nums[j+1:]...)
+				j--
+			}
+		}
+	}
+	return len(nums)
+}
+
+// 合并区间
+func merge(intervals [][]int) [][]int {
+	r := [][]int{}
+	for i := 0; i < len(intervals)-1; i++ {
+		for j := i + 1; j < len(intervals); j++ {
+			if intervals[i][0] > intervals[j][0] {
+				intervals[i], intervals[j] = intervals[j], intervals[i]
+			}
+		}
+	}
+
+	for i := 0; i < len(intervals); i++ {
+		start := intervals[i][0]
+		end := intervals[i][1]
+		if len(r) == 0 {
+			r = append(r, []int{start, end})
+		} else {
+			last := r[len(r)-1]
+			if start <= last[1] {
+				if end > last[1] {
+					last[1] = end
+				}
+			} else {
+				r = append(r, []int{start, end})
+			}
+		}
+	}
+
+	return r
+}
+
+// 两数之和
+func twoSum(nums []int, target int) []int {
+	a := make(map[int]int)
+
+	for i := 0; i < len(nums); i++ {
+		for j := i + 1; j < len(nums); j++ {
+			if nums[i]+nums[j] == target {
+				a[0] = i
+				a[1] = j
+				return []int{a[0], a[1]}
+			}
+		}
+	}
+	return []int{}
 }
